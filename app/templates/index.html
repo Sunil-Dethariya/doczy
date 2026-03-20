@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOCZY | Book Doctor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f8fb;
+    }
+
+    .service-card {
+      border-radius: 16px;
+      transition: 0.3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .urgency-btn input {
+      display: none;
+    }
+
+    .urgency-btn label {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .urgency-btn input:checked + label {
+      background: #0d6efd;
+      color: #fff;
+      border-color: #0d6efd;
+    }
+    .d-none { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar bg-white shadow-sm">
+  <div class="container">
+    <span class="navbar-brand fw-bold text-primary">DOCZY</span>
+    <span class="text-muted">Doctor at your doorstep</span>
+  </div>
+</nav>
+
+<!-- SERVICE SELECTION -->
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h2 class="fw-bold">Select Medical Service</h2>
+    <p class="text-muted">Choose the type of doctor visit you need</p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Emergency -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card service-card h-100 text-center p-4">
+        <div class="fs-1 text-danger">🚨</div>
+        <h5 class="fw-bold mt-3">Emergency Doctor Visit</h5>
+        <p class="text-muted">Immediate medical attention</p>
+        <button class="btn btn-danger book-btn" onclick="goToPage()">
+          Book Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Non Emergency -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card service-card h-100 text-center p-4">
+        <div class="fs-1 text-warning">🩺</div>
+        <h5 class="fw-bold mt-3">Non-Emergency Visit</h5>
+        <p class="text-muted">Fever, pain, BP, sugar etc.</p>
+        <button class="btn btn-warning book-btn" onclick="goToPage()">
+          Book Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Scheduled -->
+    <div class="col-lg-4 col-md-12">
+      <div class="card service-card h-100 text-center p-4">
+        <div class="fs-1 text-success">📅</div>
+        <h5 class="fw-bold mt-3">Scheduled Visit</h5>
+        <p class="text-muted">Plan a visit in advance</p>
+        <button class="btn btn-success book-btn" onclick="goToPage()">
+          Book Now
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+function goToPage(){
+  window.location.href = "auth/";
+}
+</script>
+
+
+</body>
+</html>

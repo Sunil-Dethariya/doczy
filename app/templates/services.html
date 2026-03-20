@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DOCZY | Book Doctor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: #f4f8fb;
+    }
+
+    .service-card {
+      border-radius: 16px;
+      transition: 0.3s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .urgency-btn input {
+      display: none;
+    }
+
+    .urgency-btn label {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #dee2e6;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .urgency-btn input:checked + label {
+      background: #0d6efd;
+      color: #fff;
+      border-color: #0d6efd;
+    }
+    .d-none { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar bg-white shadow-sm">
+  <div class="container">
+    <span class="navbar-brand fw-bold text-primary">DOCZY</span>
+    <span class="text-muted">Doctor at your doorstep</span>
+  </div>
+</nav>
+
+<!-- SERVICE SELECTION -->
+<div class="container py-5">
+  <div class="text-center mb-5">
+    <h2 class="fw-bold">Select Medical Service</h2>
+    <p class="text-muted">Choose the type of doctor visit you need</p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Emergency -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card service-card h-100 text-center p-4">
+        <div class="fs-1 text-danger">🚨</div>
+        <h5 class="fw-bold mt-3">Emergency Doctor Visit</h5>
+        <p class="text-muted">Immediate medical attention</p>
+        <button class="btn btn-danger book-btn" data-service="Emergency">
+          Book Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Non Emergency -->
+    <div class="col-lg-4 col-md-6">
+      <div class="card service-card h-100 text-center p-4">
+        <div class="fs-1 text-warning">🩺</div>
+        <h5 class="fw-bold mt-3">Non-Emergency Visit</h5>
+        <p class="text-muted">Fever, pain, BP, sugar etc.</p>
+        <button class="btn btn-warning book-btn" data-service="Non-Emergency">
+          Book Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Scheduled -->
+    <div class="col-lg-4 col-md-12">
+      <div class="card service-card h-100 text-center p-4">
+        <div class="fs-1 text-success">📅</div>
+        <h5 class="fw-bold mt-3">Scheduled Visit</h5>
+        <p class="text-muted">Plan a visit in advance</p>
+        <button class="btn btn-success book-btn" data-service="Scheduled">
+          Book Now
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= BOOKING MODAL (SAME PAGE) ================= -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Book Doctor – <span id="serviceType" class="text-primary"></span>
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <form method="post" action="{% url 'create_booking' %}">{% csrf_token %}
+
+          <div id="bookingFormSection">
+
+          <!-- hidden service -->
+          <input type="hidden" name="service_type" id="serviceInput">
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Patient Name</label>
+              <input type="text" class="form-control" name="patient_name" placeholder="Enter patient name" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Mobile Number</label>
+              <input type="tel" class="form-control" name="mobile" placeholder="Enter mobile number" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Age</label>
+              <input type="number" class="form-control" name="age" placeholder="Age" required>
+            </div>
+
+            <div class="col-md-8">
+              <label class="form-label">Gender</label>
+              <select class="form-select" name="gender" required>
+                <option value="">Select gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-4">
+            <label class="form-label">Medical Concern</label>
+            <textarea class="form-control" name="medical_concern" rows="3"
+              placeholder="Describe symptoms, pain, duration etc." required></textarea>
+          </div>
+          <!-- ================= LOCATION SECTION ================= -->
+<div class="mt-4">
+
+  <label class="form-label fw-bold">
+    📍 Patient Location
+  </label>
+  <p class="text-muted small mb-2">
+    Help doctor reach you faster
+  </p>
+
+  <!-- GPS BUTTON -->
+  <button type="button"
+          class="btn btn-outline-primary mb-3"
+          onclick="getCurrentLocation()">
+    📍 Use my current location
+  </button>
+
+  <!-- Hidden latitude / longitude -->
+  <input type="hidden" name="latitude" id="latitude">
+  <input type="hidden" name="longitude" id="longitude">
+  <input type="hidden" name="location_source" id="location_source" value="MANUAL">
+
+  <!-- Address textarea -->
+  <div class="mt-2">
+    <label class="form-label">Full Address</label>
+    <textarea
+      class="form-control"
+      name="address"
+      id="address"
+      rows="3"
+      placeholder="Flat no, Street, Area, Landmark"
+      required></textarea>
+  </div>
+
+  <!-- Status text -->
+  <small id="locationStatus" class="text-muted d-block mt-2"></small>
+
+</div>
+<!-- ================= END LOCATION SECTION ================= -->
+
+          <div class="mt-4">
+            <label class="form-label fw-bold">Urgency Level</label>
+            <div class="row g-2">
+              <div class="col-md-3 urgency-btn">
+                <input type="radio" name="urgency" id="u1" value="Emergency" required>
+                <label for="u1">🚨 Emergency</label>
+              </div>
+              <div class="col-md-3 urgency-btn">
+                <input type="radio"  name="urgency" id="u2" value="2 Hours">
+                <label for="u2">2 Hours</label>
+              </div>
+              <div class="col-md-3 urgency-btn">
+                <input type="radio" name="urgency" id="u3" value="5 Hours">
+                <label for="u3">5 Hours</label>
+              </div>
+              <div class="col-md-3 urgency-btn">
+                <input type="radio" name="urgency" id="u4" value="24 Hours">
+                <label for="u4">24 Hours</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" onclick="goToPayment()">Confirm Booking</button>
+      </div>
+          </div>
+          </div>
+          <!-- ================= LOADER ================= -->
+<div id="loadingSection" class="text-center py-5 d-none">
+  <div class="spinner-border text-primary mb-3"></div>
+  <h5 class="fw-bold">Preparing payment options…</h5>
+  <p class="text-muted">Please wait</p>
+</div>
+
+
+<!-- ================= PAYMENT UI ================= -->
+<div id="paymentSection" class="d-none">
+
+  <h4 class="fw-bold mb-3 text-center">💳 Complete Your Booking</h4>
+
+  <!-- Summary Card -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h6 class="fw-bold">Doctor Home Visit</h6>
+      <p class="mb-1">Service: <span id="payService">Emergency Visit</span></p>
+      <p class="mb-0 fw-bold text-success">Amount: ₹<span id="payAmount">499</span></p>
+    </div>
+  </div>
+
+  <!-- Payment Methods -->
+  <div class="mb-3">
+  <label class="fw-bold mb-2">Choose Payment Method</label>
+
+  <!-- COD -->
+  <div class="form-check mb-2">
+    <input class="form-check-input" type="radio"
+           name="payment_method" id="cod" value="COD" checked>
+    <label class="form-check-label" for="cod">
+      💵 Cash on Visit
+    </label>
+  </div>
+
+  <!-- QR -->
+  <div class="form-check mb-2">
+    <input class="form-check-input" type="radio"
+           name="payment_method" id="qr" value="QR">
+    <label class="form-check-label" for="qr">
+      📷 Pay via QR Code
+    </label>
+  </div>
+
+
+<!-- QR BLOCK -->
+<div id="qrBlock" class="border rounded p-3 mt-3 d-none text-center">
+
+  <h6 class="fw-bold mb-2">Scan & Pay ₹499</h6>
+
+  <img id="upiQr"
+       class="img-fluid rounded shadow mb-2"
+       style="max-width:220px;">
+
+  <div class="form-check mt-2 text-start">
+    <input class="form-check-input" type="checkbox" id="qrPaidCheckbox">
+    <label class="form-check-label fw-semibold">
+      I have completed the payment
+    </label>
+  </div>
+</div>
+    <!-- ✅ FINAL CONFIRM BUTTON -->
+  <button id="confirmPaymentBtn"
+          class="btn btn-success w-100 mt-4"
+          onclick="confirmPayment()">
+    Confirm Booking
+  </button>
+    </div>
+
+<!-- ================= SUCCESS ================= -->
+<div id="successSection" class="text-center py-5 d-none">
+  <div class="fs-1 text-success mb-3">✅</div>
+  <h4 class="fw-bold">Booking Request Submitted</h4>
+  <p class="text-muted">
+    Your booking has been received.<br>
+    Doctor will be assigned after verification.
+  </p>
+</div>
+
+ </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ================= JS ================= -->
+<script>
+
+  const modal = new bootstrap.Modal(
+    document.getElementById("bookingModal")
+  );
+
+  const serviceText = document.getElementById("serviceType");
+  const serviceInput = document.getElementById("serviceInput");
+
+  document.querySelectorAll(".book-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const selectedService = btn.dataset.service;
+      serviceText.innerText = selectedService;
+      serviceInput.value = selectedService;
+      modal.show();
+    });
+  });
+
+  function confirmBooking() {
+    const form = document.getElementById("bookingForm");
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    if (confirm(
+      "You are about to confirm this doctor booking.\n\nPlease check all details carefully."
+    )) {
+      alert("✅ Booking successful!\nA doctor will contact you shortly.");
+      form.reset();
+      modal.hide();
+    }
+  }
+</script>
+<script>
+function getCurrentLocation() {
+
+  const statusText = document.getElementById("locationStatus");
+
+  if (!navigator.geolocation) {
+    statusText.innerText = "❌ Location not supported by this browser.";
+    return;
+  }
+
+  statusText.innerText = "📡 Fetching your location...";
+
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      document.getElementById("latitude").value = lat;
+      document.getElementById("longitude").value = lon;
+      document.getElementById("location_source").value = "GPS";
+
+      statusText.innerText = "✅ Location detected. You can edit address if needed.";
+
+    },
+
+    function (error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          statusText.innerText = "❌ Location permission denied. Please enter address manually.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          statusText.innerText = "❌ Location unavailable. Please enter address manually.";
+          break;
+        case error.TIMEOUT:
+          statusText.innerText = "❌ Location request timed out. Try again.";
+          break;
+        default:
+          statusText.innerText = "❌ Unable to fetch location.";
+      }
+    }
+  );
+}
+</script>
+<script>
+<script>
+function goToPayment() {
+
+  const lat = document.getElementById("latitude").value;
+  const lon = document.getElementById("longitude").value;
+  const address = document.getElementById("address").value.trim();
+
+  // GPS mandatory
+  if (!lat || !lon) {
+    alert("📍 Please use current location to continue booking.");
+    return;
+  }
+
+  // Address mandatory
+  if (address.length < 5) {
+    alert("🏠 Please enter your full address.");
+    return;
+  }
+
+  // UI TRANSITION
+  document.getElementById("bookingFormSection").classList.add("d-none");
+  document.getElementById("loadingSection").classList.remove("d-none");
+
+  setTimeout(() => {
+    document.getElementById("loadingSection").classList.add("d-none");
+    document.getElementById("paymentSection").classList.remove("d-none");
+  }, 2000);
+}
+</script>
+
+
+
+<script>
+/* STEP 1: Booking → Loader → Payment */
+function goToPayment() {
+  document.getElementById("bookingFormSection").classList.add("d-none");
+  document.getElementById("loadingSection").classList.remove("d-none");
+
+  setTimeout(() => {
+    document.getElementById("loadingSection").classList.add("d-none");
+    document.getElementById("paymentSection").classList.remove("d-none");
+  }, 2000); // 2 sec smooth delay
+}
+
+/* STEP 2: Show / hide QR */
+function toggleQR() {
+  document.getElementById("qrImage").classList.toggle("d-none");
+}
+
+/* STEP 3: Payment confirm */
+function confirmPayment() {
+  const method = document.querySelector(
+    'input[name="payment_method"]:checked'
+  ).value;
+
+  document.getElementById("paymentSection").classList.add("d-none");
+
+  document.getElementById("loadingSection").classList.remove("d-none");
+  setTimeout(() => {
+    document.getElementById("loadingSection").classList.add("d-none");
+    document.getElementById("successSection").classList.remove("d-none");
+  }, 1000);
+
+  console.log("Selected payment method:", method);
+}
+</script>
+
+<!--     for payment radio button -->
+
+<script>
+const QR_AMOUNT = 100;
+const UPI_ID = "krupalibyaliya@oksbi"; // 🔁 later replace with real one
+
+const qrRadio = document.getElementById("qr");
+const codRadio = document.getElementById("cod");
+const qrBlock = document.getElementById("qrBlock");
+const confirmBtn = document.querySelector("#paymentSection button");
+const qrCheckbox = document.getElementById("qrPaidCheckbox");
+const qrImg = document.getElementById("upiQr");
+
+// generate QR
+function generateUPIQR() {
+  const upiURL = `upi://pay?pa=${UPI_ID}&pn=DOCZY&am=${QR_AMOUNT}&cu=INR`;
+
+  qrImg.src =
+    "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+    encodeURIComponent(upiURL);
+}
+
+// radio change
+document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
+  radio.addEventListener("change", () => {
+
+    if (qrRadio.checked) {
+      qrBlock.classList.remove("d-none");
+      generateUPIQR();
+      confirmBtn.disabled = true;
+    } else {
+      qrBlock.classList.add("d-none");
+      confirmBtn.disabled = false;
+      qrCheckbox.checked = false;
+    }
+
+  });
+});
+
+// checkbox validation
+qrCheckbox.addEventListener("change", () => {
+  confirmBtn.disabled = !qrCheckbox.checked;
+});
+</script>
+
+<!-- Bootstrap JS -->
+</body>
+</html>

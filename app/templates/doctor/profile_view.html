@@ -1,0 +1,32 @@
+{% extends "doctor/base.html" %}
+
+{% block content %}
+
+<h4 class="fw-bold mb-4">👤 My Profile</h4>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+
+    <div class="row align-items-center">
+      <div class="col-md-3 text-center">
+        {% if profile.profile_photo %}
+          <img src="{{ profile.profile_photo.url }}"
+               class="img-fluid rounded-circle mb-2"
+               style="width:120px;">
+        {% endif %}
+      </div>
+
+      <div class="col-md-9">
+        <h5 class="fw-bold">{{ profile.full_name }}</h5>
+        <p class="mb-1">Specialization : {{ profile.specialization }}</p>
+        <p class="mb-1">Qualification : {{ profile.qualification }}</p>
+        <p class="mb-1">Experience : {{ profile.experience_years }} years experience</p>
+        <p class="mb-1">Languages : {{ profile.languages }}</p>
+        <p class="mb-1">City : {{ profile.city }}</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
