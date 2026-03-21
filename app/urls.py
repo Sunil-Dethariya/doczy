@@ -4,11 +4,11 @@ from . import views
 urlpatterns = [
 
     # Auth & basic pages
-    path("",views.index,name="index"),
+    path("d",views.index,name="index"),
     path("auth/", views.auth, name="auth"),
     path("login/", views.login_view, name="login"),
     path("register/", views.register_view, name="register"),
-    path("services/", views.services, name="services"),
+    path("", views.services, name="services"),
     path("dashbord/", views.dashbord, name="dashbord"),
 
     # Booking
