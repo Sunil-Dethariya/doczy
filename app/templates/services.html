@@ -296,6 +296,10 @@
     Your booking has been received.<br>
     Doctor will be assigned after verification.
   </p>
+    <!-- ✅ OK Button -->
+  <button class="btn btn-primary mt-3" onclick="goHome()">
+    OK
+  </button>
 </div>
 
  </div>
@@ -495,7 +499,9 @@ qrCheckbox.addEventListener("change", () => {
 });
 </script>
 
-
+function goHome() {
+  location.reload(); // ya modal.hide()
+}
 
 <!-- Bootstrap JS -->
 </body>
