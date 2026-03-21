@@ -312,40 +312,33 @@
 
 <!-- ================= JS ================= -->
 <script>
+const modal = new bootstrap.Modal(
+  document.getElementById("bookingModal")
+);
 
-  const modal = new bootstrap.Modal(
-    document.getElementById("bookingModal")
-  );
+const serviceText = document.getElementById("serviceType");
+const serviceInput = document.getElementById("serviceInput");
 
-  const serviceText = document.getElementById("serviceType");
-  const serviceInput = document.getElementById("serviceInput");
+document.querySelectorAll(".book-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
 
-  document.querySelectorAll(".book-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const selectedService = btn.dataset.service;
-      serviceText.innerText = selectedService;
-      serviceInput.value = selectedService;
-      modal.show();
-    });
-  });
+    let isAuthenticated = "{{ request.user.is_authenticated }}";
 
-  function confirmBooking() {
-    const form = document.getElementById("bookingForm");
-
-    if (!form.checkValidity()) {
-      form.reportValidity();
+    if (isAuthenticated !== "True") {
+      window.location.href = "/auth/";
       return;
     }
 
-    if (confirm(
-      "You are about to confirm this doctor booking.\n\nPlease check all details carefully."
-    )) {
-      alert("✅ Booking successful!\nA doctor will contact you shortly.");
-      form.reset();
-      modal.hide();
-    }
-  }
+    // login hai → modal open
+    const selectedService = btn.dataset.service;
+    serviceText.innerText = selectedService;
+    serviceInput.value = selectedService;
+    modal.show();
+  });
+});
 </script>
+
+
 <script>
 function getCurrentLocation() {
 
@@ -503,23 +496,7 @@ qrCheckbox.addEventListener("change", () => {
 </script>
 
 
-<script>
-document.querySelectorAll(".book-btn").forEach(btn => {
-  btn.addEventListener("click", function () {
 
-    // Django se user login check
-    let isAuthenticated = "{{ request.user.is_authenticated }}";
-
-    if (isAuthenticated === "True") {
-      // login hai → booking page
-      window.location.href = "/create-booking/";
-    } else {
-      // login nahi → login page
-      window.location.href = "/auth/";
-    }
-  });
-});
-</script>
 <!-- Bootstrap JS -->
 </body>
 </html>
