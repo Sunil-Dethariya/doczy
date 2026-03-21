@@ -497,11 +497,13 @@ document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
 qrCheckbox.addEventListener("change", () => {
   confirmBtn.disabled = !qrCheckbox.checked;
 });
-</script>
 
-function goHome() {
+  function goHome() {
   location.reload(); // ya modal.hide()
 }
+
+</script>
+
 
 <!-- Bootstrap JS -->
 </body>
