@@ -75,11 +75,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 import dj_database_url
+import os
 
 DATABASES = {
-    'default': dj_database_url.parse(
-        "postgresql://doczy_db_user:Zup9lLUGmGAVHmIcD7Tl4IUCsDRsVeY7@dpg-d6v0q59r0fns73c04i6g-a/doczy_db"
-    )
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
 
 
