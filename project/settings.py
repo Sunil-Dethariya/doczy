@@ -125,4 +125,4 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 SECURE_SSL_REDIRECT = False
 
 DEBUG = False
-ALLOWED_HOSTS = ["doczy.online", "www.doczy.online","127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["doczy.online", "www.doczy.online","doczy-8ekb.onrender.com","127.0.0.1", "localhost",]
