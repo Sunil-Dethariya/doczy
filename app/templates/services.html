@@ -502,6 +502,24 @@ qrCheckbox.addEventListener("change", () => {
 });
 </script>
 
+
+<script>
+document.querySelectorAll(".book-btn").forEach(btn => {
+  btn.addEventListener("click", function () {
+
+    // Django se user login check
+    let isAuthenticated = "{{ request.user.is_authenticated }}";
+
+    if (isAuthenticated === "True") {
+      // login hai → booking page
+      window.location.href = "/create-booking/";
+    } else {
+      // login nahi → login page
+      window.location.href = "/auth/";
+    }
+  });
+});
+</script>
 <!-- Bootstrap JS -->
 </body>
 </html>
