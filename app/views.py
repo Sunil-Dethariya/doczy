@@ -10,11 +10,12 @@ from django.utils.timezone import now
 from datetime import timedelta
 
 
-User.objects.create_superuser(
-    username="admin",
-    email="doczy@gmail.com",
-    password="143"
-)
+if not User.objects.filter(username="doczy").exists():
+    User.objects.create_superuser(
+        username="doczy",
+        email="doczy@gmail.com",
+        password="143"
+    )
 
 # ---------- AUTH / BASIC PAGES ----------
 
