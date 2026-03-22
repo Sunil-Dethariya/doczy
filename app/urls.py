@@ -67,4 +67,5 @@ urlpatterns = [
         views.doctor_profile_edit,
         name="doctor_profile_edit"
     ),
+    path("assign-doctor/", views.assign_doctor_page, name="assign_doctor"),
 ]

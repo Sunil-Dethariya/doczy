@@ -301,3 +301,13 @@ def doctor_new_booking_count(request):
     ).count()
 
     return JsonResponse({"count": count})
+
+@login_required
+def assign_doctor_page(request):
+    booking = DoctorBooking.objects.filter(
+        user=request.user
+    ).order_by("-created_at").first()
+
+    return render(request, "assign_doctor.html", {
+        "booking": booking
+    })
