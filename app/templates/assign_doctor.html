@@ -2,29 +2,57 @@
 <html>
 <head>
   <title>Doctor Status</title>
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
+
     body {
-      background: linear-gradient(135deg, #eef2ff, #f8fbff);
-      font-family: Poppins;
+      background: linear-gradient(135deg, #dbeafe, #f0f9ff);
+      font-family: 'Poppins', sans-serif;
     }
 
-.card-box {
-  border-radius: 20px;
-  padding: 30px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  text-align: center;
-  max-width: 380px;
-  margin: auto;
-}
+    /* NAVBAR */
+    .navbar {
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.7) !important;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
 
+    .navbar a {
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .navbar a:hover {
+      color: #0d6efd;
+    }
+
+    /* CARD */
+    .card-box {
+      border-radius: 25px;
+      padding: 35px 25px;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .card-box:hover {
+      transform: translateY(-5px);
+    }
+
+    /* LOADER */
     .loader {
-      width: 60px;
-      height: 60px;
+      width: 70px;
+      height: 70px;
       border: 6px solid #e0e7ff;
-      border-top: 6px solid #0d6efd;
+      border-top: 6px solid #2563eb;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin: auto;
@@ -34,19 +62,57 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* DOCTOR IMAGE */
     .doctor-img {
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
+      border: 4px solid #e0e7ff;
+      padding: 5px;
+      background: white;
     }
+
+    /* STATUS TEXT */
+    .status-text {
+      font-size: 15px;
+      color: #6b7280;
+    }
+
+    /* SUCCESS MESSAGE */
+    .success-msg {
+      background: #ecfdf5;
+      color: #059669;
+      padding: 10px;
+      border-radius: 12px;
+      font-weight: 500;
+    }
+
+    /* COMPLETED ICON */
+    .completed-icon {
+      font-size: 60px;
+      animation: pop 0.4s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* MOBILE FIX */
+    @media(max-width: 576px){
+      .card-box {
+        padding: 25px 20px;
+      }
+    }
+
   </style>
 </head>
 
 <body class="d-flex flex-column min-vh-100">
 
 <!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3">
+<nav class="navbar navbar-expand-lg shadow-sm py-3">
   <div class="container d-flex justify-content-between">
     <span class="navbar-brand fw-bold text-primary">DOCZY</span>
 
@@ -58,46 +124,46 @@
 </nav>
 
 <div class="container d-flex justify-content-center align-items-center" style="min-height:80vh;">
-  <div class="row justify-content-center">
+  <div class="row justify-content-center w-100">
     <div class="col-lg-4 col-md-6 col-12 px-3">
 
       <div class="card-box">
 
         {% if not booking %}
-          <h4>No Booking Yet ❌</h4>
-          <p class="text-muted">Please book a doctor first</p>
+          <h4 class="fw-bold">No Booking Yet ❌</h4>
+          <p class="status-text">Please book a doctor first</p>
         {% endif %}
 
         {% if booking %}
 
-          <p class="text-muted">Booking Date: {{ booking.created_at }}</p>
-          <h5>{{ booking.patient_name }}</h5>
+          <p class="status-text">📅 {{ booking.created_at }}</p>
+          <h5 class="fw-semibold">{{ booking.patient_name }}</h5>
 
           {% if booking.status == "Pending" %}
             <div class="loader mt-4"></div>
-            <p class="mt-3 fw-bold">Finding your doctor...</p>
-            <p class="text-muted">Please wait, assigning soon</p>
+            <p class="mt-3 fw-bold text-primary">Finding your doctor...</p>
+            <p class="status-text">Please wait, assigning soon</p>
           {% endif %}
 
           {% if booking.status == "Assigned" or booking.status == "Accepted" %}
             <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="doctor-img mb-3">
 
-            <h4>Dr. {{ booking.assigned_doctor.first_name }}</h4>
-            <p class="text-muted">Doctor assigned successfully</p>
+            <h4 class="fw-bold">Dr. {{ booking.assigned_doctor.first_name }}</h4>
+            <p class="status-text">Doctor assigned successfully</p>
 
             <div class="mt-3">
-              <p>📞 Contact: {{ booking.assigned_doctor.username }}</p>
+              <p>📞 {{ booking.assigned_doctor.username }}</p>
             </div>
 
-            <p class="text-success fw-bold mt-3">
+            <div class="success-msg mt-3">
               🚗 Your doctor is on the way
-            </p>
+            </div>
           {% endif %}
 
           {% if booking.status == "Completed" %}
-            <div class="fs-1 text-success">✅</div>
-            <h4 class="mt-3">Visit Completed</h4>
-            <p class="text-muted">Hope you feel better!</p>
+            <div class="completed-icon text-success">✅</div>
+            <h4 class="mt-3 fw-bold">Visit Completed</h4>
+            <p class="status-text">Hope you feel better!</p>
           {% endif %}
 
         {% endif %}
